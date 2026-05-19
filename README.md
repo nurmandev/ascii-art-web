@@ -1,28 +1,76 @@
 # ASCII Art Web
 
-## Description
-Ascii-art-web is a web Graphical User Interface for the ascii-art tool. It runs a web server built in Go that presents a user-friendly interface to convert text into stylized ASCII art using different banners (Standard, Shadow, and Thinkertoy). The underlying API processes requests and intelligently constructs the text representations.
+A simple and interactive Go application that converts ordinary text into cool ASCII art. It features a modern web interface and a command-line interface (CLI), supporting three different font styles.
 
-## Authors
-- Advanced Agent AI (Antigravity)
+---
 
-## Usage: How to run
-1. Check that you have Go installed on your machine.
-2. Clone this repository or navigate to its directory.
-3. Make sure that the banner `.txt` files (`standard.txt`, `shadow.txt`, `thinkertoy.txt`) are present in the project root directory.
-4. Run the following command to start the web server:
-   ```bash
-   go run .
-   ```
-5. Open up a web browser and visit `http://localhost:8080`.
-6. Enter your text, select a banner style, and click "Generate ASCII Art" to see your result!
+## Features
 
-## Implementation details: Algorithm
-- The program initializes a basic HTTP server using `net/http` package from the Go standard library.
-- The `/` route maps to the home handler that renders the `index.html` file using the `html/template` package.
-- When the user submits the form, a `POST` request is sent to `/ascii-art`.
-- The backend parses the text and standard banner option, checking for incorrect inputs like missing values or out-of-bounds characters. Invalid inputs return `400 Bad Request`.
-- If the requested banner does not exist or template is missing, `404 Not Found` is returned.
-- Unhandled errors, such as a missing banner `.txt` file during parsing, trigger a `500 Internal Server Error`.
-- The textual conversion engine iterates over each character, finds the corresponding visual lines within the desired banner `.txt` file (using its mathematical offset indexing formula), and constructs the completed ASCII art block line by line.
+*   **Web Interface**: A clean, modern page where you can type your text, select a style, and see the generated ASCII art instantly.
+*   **Command-Line (CLI)**: A quick way to generate ASCII art directly in your terminal.
+*   **3 Font Styles**:
+    *   `standard` - A classic and bold design.
+    *   `shadow` - A cool 3D shadow block design.
+    *   `thinkertoy` - A retro, balloon-like connected design.
 
+---
+
+## How to Run
+
+The app is built entirely with Go's standard library, so there are no external dependencies to install.
+
+### 1. Web Server
+
+To launch the web interface, run this command in the project folder:
+
+```bash
+go run .
+```
+
+By default, the server starts on port **8080**. Open your browser and go to:
+👉 [http://localhost:8080](http://localhost:8080)
+
+#### Custom Port (Optional)
+To use a different port, set the `PORT` environment variable:
+*   **Windows (PowerShell)**: `$env:PORT="9000"; go run .`
+*   **Linux / macOS**: `PORT=9000 go run .`
+
+---
+
+### 2. Command Line (CLI)
+
+To output ASCII art directly to the terminal:
+
+```bash
+go run . [TEXT] [FONT]
+```
+
+**Examples:**
+```bash
+go run . "hello" standard
+go run . "hello" shadow
+go run . "hello" thinkertoy
+```
+
+*Note: If you don't specify a font, the app defaults to `standard`.*
+
+---
+
+### 3. Running Tests
+
+To run the automated tests:
+
+```bash
+go test -v
+```
+
+---
+
+## How It Works
+
+The program converts text into graphic ASCII letters (each 8 lines tall) using the following simple steps:
+
+1.  **Reads the Font File**: It opens the selected font template (`standard.txt`, `shadow.txt`, or `thinkertoy.txt`).
+2.  **Locates Characters**: Each character in the template is 8 lines tall. The program calculates the position of each character based on its ASCII number value.
+3.  **Draws the Art**: It loops line-by-line (0 to 7) for the input text, joining the corresponding lines of each character side-by-side.
+4.  **Delivers the Output**: Prints the reconstructed lines directly to your terminal or displays them on the webpage.
